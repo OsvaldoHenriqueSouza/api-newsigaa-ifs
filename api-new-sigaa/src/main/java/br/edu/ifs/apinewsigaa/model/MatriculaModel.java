@@ -11,9 +11,9 @@ public class MatriculaModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
-    @JoinColumn(name = "idTurma")
+    @JoinColumn(name = "idTurma", nullable = false)
     private TurmaModel idTurma;
     @ManyToOne
-    @JoinColumn(name = "idAluno")
+    @JoinColumn(name = "idAluno", nullable = false)
     private AlunoModel idAluno;
 }
