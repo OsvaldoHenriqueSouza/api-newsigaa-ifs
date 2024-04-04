@@ -1,11 +1,17 @@
 package br.edu.ifs.apinewsigaa.model;
 
+import br.edu.ifs.apinewsigaa.rest.Dtos.Aluno.AlunoDto;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
 import java.util.Date;
 
 @Data
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "aluno")
 public class AlunoModel {
     @Id
@@ -25,4 +31,14 @@ public class AlunoModel {
     private String apelido;
     @Column(name = "matricula", nullable = false, unique = true)
     private int matricula;
+
+    public AlunoModel(AlunoDto aluno) {
+        this.nome = aluno.nome();
+        this.cpf = aluno.cpf();
+        this.email = aluno.email();
+        this.dataNascimento = aluno.dataNascimento();
+        this.celular = aluno.celular();
+        this.matricula = aluno.matricula();
+        this.apelido = aluno.apelido();
+    }
 }
