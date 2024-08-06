@@ -1,72 +1,53 @@
 package br.edu.ifs.apinewsigaa.rest.controller.Aluno;
 
 import br.edu.ifs.apinewsigaa.model.AlunoModel;
-import br.edu.ifs.apinewsigaa.repository.Aluno.AlunoRepository;
-import br.edu.ifs.apinewsigaa.rest.Dtos.Aluno.AlunoDto;
+import br.edu.ifs.apinewsigaa.rest.Dtos.AlunoDto;
+import br.edu.ifs.apinewsigaa.service.AlunoService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Validated
 @RestController
 @RequestMapping("/alunos")
 public class AlunoController {
+
     @Autowired
-    private AlunoRepository alunoRepository;
+    private AlunoService alunoService;
 
     @GetMapping
-    public ResponseEntity getAllAlunos() {
-        var allAlunos = alunoRepository.findAll();
-        return ResponseEntity.ok(allAlunos);
+    public ResponseEntity<List<AlunoDto>> getAllAlunos() {
+        List<AlunoDto> listAlunos = alunoService.getAlunos();
+        return ResponseEntity.ok(listAlunos);
     }
 
-//    @GetMapping("/{email}")
-//    public ResponseEntity getAluno(@PathVariable String email) {
-//        var aluno = alunoRepository.findByEmail(email);
-//        return ResponseEntity.ok(aluno);
-//    }
-
     @GetMapping("/{matricula}")
-    public ResponseEntity getAluno(@PathVariable int matricula) {
-        var aluno = alunoRepository.findByMatricula(matricula);
+    public ResponseEntity<AlunoDto> getAluno(@PathVariable @NotNull String matricula) {
+        AlunoDto aluno = alunoService.getPorMatricula(matricula);
         return ResponseEntity.ok(aluno);
     }
 
     @PostMapping
-    public ResponseEntity registerAluno(@RequestBody AlunoDto aluno) {
-        AlunoModel alunoModel = new AlunoModel(aluno);
-        alunoRepository.save(alunoModel);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AlunoDto> registerAluno(@RequestBody @Valid AlunoModel alunoRequest) {
+        AlunoDto aluno = alunoService.registroAluno(alunoRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(aluno);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity updateAluno(@RequestBody AlunoDto aluno) {
-        var optionalAluno = alunoRepository.findById(aluno.id());
-        if (optionalAluno.isPresent()) {
-            AlunoModel alunoModel = optionalAluno.get();
-            alunoModel.setNome(aluno.nome());
-            alunoModel.setCpf(aluno.cpf());
-            alunoModel.setEmail(aluno.email());
-            alunoModel.setDataNascimento(aluno.dataNascimento());
-            alunoModel.setCelular(aluno.celular());
-            alunoModel.setMatricula(aluno.matricula());
-            alunoModel.setApelido(aluno.apelido());
-            alunoRepository.save(alunoModel);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("/{matriclua}")
+    public ResponseEntity<AlunoDto> updateAluno(@PathVariable String matriclua, @RequestBody AlunoModel aluno) {
+        alunoService.updateAluno(matriclua, aluno);
+        return ResponseEntity.ok(aluno.toDto());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity deleteAluno(@PathVariable int id) {
-        var optionalAluno = alunoRepository.findById(id);
-        if (optionalAluno.isPresent()) {
-            alunoRepository.delete(optionalAluno.get());
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @DeleteMapping("/{matricula}")
+    public ResponseEntity<String> deleteAluno(@PathVariable String matricula) {
+        alunoService.deleteAluno(matricula);
+        return ResponseEntity.ok("Aluno deletado com sucesso!");
     }
-
-
 }
