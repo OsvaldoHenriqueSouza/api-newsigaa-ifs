@@ -1,8 +1,11 @@
 package br.edu.ifs.apinewsigaa.model;
 
-import br.edu.ifs.apinewsigaa.rest.Dtos.Aluno.AlunoDto;
+import br.edu.ifs.apinewsigaa.rest.Dtos.AlunoDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
+import org.modelmapper.ModelMapper;
 
 import java.util.Date;
 
@@ -15,8 +18,10 @@ import java.util.Date;
 @Table(name = "aluno")
 public class AlunoModel {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    @NotNull
+    @Length(min = 3, max = 255)
     @Column(name = "nome", length = 255, nullable = false)
     private String nome;
     @Column(name = "cpf", length = 14, nullable = false, unique = true)
@@ -30,15 +35,10 @@ public class AlunoModel {
     @Column(name = "apelido", length = 255, nullable = true)
     private String apelido;
     @Column(name = "matricula", nullable = false, unique = true)
-    private int matricula;
+    private String matricula;
 
-    public AlunoModel(AlunoDto aluno) {
-        this.nome = aluno.nome();
-        this.cpf = aluno.cpf();
-        this.email = aluno.email();
-        this.dataNascimento = aluno.dataNascimento();
-        this.celular = aluno.celular();
-        this.matricula = aluno.matricula();
-        this.apelido = aluno.apelido();
+    public AlunoDto toDto() {
+        var modelMapper = new ModelMapper();
+        return modelMapper.map(this, AlunoDto.class);
     }
 }
