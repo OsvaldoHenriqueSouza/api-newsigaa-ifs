@@ -4,6 +4,9 @@ package br.edu.ifs.apinewsigaa.exception;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class DataIntegrityException extends RuntimeException{
     private static final long serialVersionUID = 1L;
 
@@ -14,21 +17,22 @@ public class DataIntegrityException extends RuntimeException{
         super(msg, cause);
     }
 
-    public static String extrairErro(DataIntegrityViolationException e){
+    public static String tratamentoErro(DataIntegrityViolationException e) {
         Throwable causa = e.getCause();
-        if(causa instanceof ConstraintViolationException){
+        if (causa instanceof ConstraintViolationException) {
             String msg = causa.getMessage();
-            if(msg.contains("Unique index or primary key violation")){
-                if (msg.contains("CELULAR")){
-                    return "CELULAR já cadastrado";
-                } else if (msg.contains("CPF")) {
-                    return "CPF já cadastrado";
-                } else if (msg.contains("EMAIL")) {
-                    return "EMAIL já cadastrado";
-                } else if (msg.contains("MATRICULA")) {
-                    return "MATRICULA já cadastrada";
-                } else if (msg.contains("NOME")) {
-                    return "NOME já cadastrado";
+            if (msg.contains("Unique index or primary key violation")) {
+                Map<String, String> violacoes = new HashMap<>();
+                violacoes.put("CELULAR", "CELULAR já cadastrado");
+                violacoes.put("CPF", "CPF já cadastrado");
+                violacoes.put("EMAIL", "EMAIL já cadastrado");
+                violacoes.put("MATRICULA", "MATRICULA já cadastrada");
+                violacoes.put("NOME", "NOME já cadastrado");
+
+                for (Map.Entry<String, String> entry : violacoes.entrySet()) {
+                    if (msg.contains(entry.getKey())) {
+                        return entry.getValue();
+                    }
                 }
             }
         }
