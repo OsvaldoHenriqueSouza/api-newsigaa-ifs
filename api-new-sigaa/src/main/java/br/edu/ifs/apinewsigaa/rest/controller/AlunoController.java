@@ -1,4 +1,4 @@
-package br.edu.ifs.apinewsigaa.rest.controller.Aluno;
+package br.edu.ifs.apinewsigaa.rest.controller;
 
 import br.edu.ifs.apinewsigaa.model.AlunoModel;
 import br.edu.ifs.apinewsigaa.rest.Dtos.AlunoDto;
@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @Validated
@@ -39,15 +38,21 @@ public class AlunoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(aluno);
     }
 
-    @PutMapping("/{matriclua}")
-    public ResponseEntity<AlunoDto> updateAluno(@PathVariable String matriclua, @RequestBody AlunoModel aluno) {
-        alunoService.updateAluno(matriclua, aluno);
+    @PutMapping
+    public ResponseEntity<AlunoDto> updateAluno(@RequestBody AlunoModel aluno) {
+        alunoService.updateAluno(aluno);
         return ResponseEntity.ok(aluno.toDto());
     }
 
-    @DeleteMapping("/{matricula}")
-    public ResponseEntity<String> deleteAluno(@PathVariable String matricula) {
-        alunoService.deleteAluno(matricula);
+//    @DeleteMapping("/{matricula}")
+//    public ResponseEntity<String> deleteAluno(@PathVariable String matricula) {
+//        alunoService.deleteAlunoPorMatricula(matricula);
+//        return ResponseEntity.ok("Aluno deletado com sucesso!");
+//    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteAlunoPorId(@PathVariable int id) {
+        alunoService.deleteAlunoPorId(id);
         return ResponseEntity.ok("Aluno deletado com sucesso!");
     }
 }
