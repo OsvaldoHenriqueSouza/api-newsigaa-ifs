@@ -1,7 +1,10 @@
 package br.edu.ifs.apinewsigaa.model;
 
+import br.edu.ifs.apinewsigaa.rest.Dtos.ProfessorDto;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.modelmapper.ModelMapper;
+
 import java.util.Date;
 
 @Data
@@ -24,5 +27,10 @@ public class ProfessorModel {
     @Column(name = "apelido", length = 255, nullable = true)
     private String apelido;
     @Column(name = "matricula", nullable = false, unique = true)
-    private int matricula;
+    private String matricula;
+
+    public ProfessorDto toDto() {
+        ModelMapper modelMapper = new ModelMapper();
+        return modelMapper.map(this, ProfessorDto.class);
+    }
 }
