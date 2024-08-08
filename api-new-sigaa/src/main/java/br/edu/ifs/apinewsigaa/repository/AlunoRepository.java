@@ -9,8 +9,6 @@ import java.util.Optional;
 public interface AlunoRepository extends JpaRepository<AlunoModel, Integer> {
     Optional<AlunoModel> findByEmail(String email);
 
-    Optional<AlunoModel> findById(int id);
-
     Optional<AlunoModel> findByMatricula(String matricula);
 
     void deleteByMatricula(String matricula);
