@@ -12,10 +12,12 @@ public class MatriculaModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "idTurma", nullable = false)
-    private int idTurma;
-    @Column(name = "idAluno", nullable = false)
-    private int idAluno;
+    @ManyToOne
+    @JoinColumn(name = "idTurma", nullable = false)
+    private TurmaModel idTurma;
+    @ManyToOne
+    @JoinColumn(name = "idAluno", nullable = false)
+    private AlunoModel idAluno;
 
     public MatriculaDto toDto() {
         ModelMapper modelMapper = new ModelMapper();

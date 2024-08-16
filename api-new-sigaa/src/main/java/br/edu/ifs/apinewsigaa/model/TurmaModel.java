@@ -4,7 +4,6 @@ import br.edu.ifs.apinewsigaa.rest.Dtos.TurmaDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
-
 import java.util.Date;
 
 @Data
@@ -16,12 +15,15 @@ public class TurmaModel {
     private int id;
     @Column(name = "dataInicio", nullable = false)
     private Date dataInicio;
-    @Column(name = "dataFim", nullable = false)
+    @Column(name = "dataFim")
     private Date dataFim;
-    @Column(name = "idProfessor", nullable = false)
-    private int idProfessor;
-    @Column(name = "idDisciplina", nullable = false)
-    private int idDisciplina;
+    @ManyToOne
+    @JoinColumn(name = "idProfessor", nullable = false)
+    private ProfessorModel idProfessor;
+    @ManyToOne
+    @JoinColumn(name = "idDisciplina", nullable = false)
+    private DisciplinaModel idDisciplina;
+
 
     public TurmaDto toDto() {
         ModelMapper modelMapper = new ModelMapper();

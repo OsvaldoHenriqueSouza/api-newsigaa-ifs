@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 
 @Data
 public class DisciplinaDto {
+    private int id;
     private String nome;
     private byte numeroCredito;
 
