@@ -21,8 +21,8 @@ public class DisciplinaModel {
     @ManyToOne
     @JoinColumn(name = "idProfessor")
     private ProfessorModel professor;
-    @OneToMany(mappedBy = "idDisciplina", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TurmaModel> turmas;
+    @OneToMany(mappedBy = "disciplina")
+    private List<AlunoModel> alunos;
 
     public DisciplinaDto toDto() {
         var modelMapper = new ModelMapper();

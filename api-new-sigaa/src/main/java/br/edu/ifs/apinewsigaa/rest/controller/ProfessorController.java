@@ -2,6 +2,7 @@ package br.edu.ifs.apinewsigaa.rest.controller;
 
 
 import br.edu.ifs.apinewsigaa.model.ProfessorModel;
+import br.edu.ifs.apinewsigaa.rest.Dtos.ProfessorDisciplinasAlunosDto;
 import br.edu.ifs.apinewsigaa.rest.Dtos.ProfessorDisciplinasDto;
 import br.edu.ifs.apinewsigaa.rest.Dtos.ProfessorDto;
 import br.edu.ifs.apinewsigaa.service.ProfessorService;
@@ -53,5 +54,11 @@ public class ProfessorController {
     public ResponseEntity<ProfessorDisciplinasDto> getProfessorDisciplinas(@PathVariable String matricula) {
         ProfessorDisciplinasDto professorDisciplinasDto = professorService.getProfessorDisciplinas(matricula);
         return ResponseEntity.ok(professorDisciplinasDto);
+    }
+
+    @GetMapping("/professorDisciplinaAlunos/{matricula}")
+    public ResponseEntity<ProfessorDisciplinasAlunosDto> getProfessorDisciplinasAlunos(@PathVariable String matricula) {
+        ProfessorDisciplinasAlunosDto professorDisciplinasAlunosDto = professorService.getProfessorDisciplinasAlunos(matricula);
+        return ResponseEntity.ok(professorDisciplinasAlunosDto);
     }
 }

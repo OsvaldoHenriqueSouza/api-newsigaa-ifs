@@ -1,12 +1,11 @@
 package br.edu.ifs.apinewsigaa.service;
 
 import br.edu.ifs.apinewsigaa.exception.ObjectNotFoundException;
+import br.edu.ifs.apinewsigaa.model.AlunoModel;
 import br.edu.ifs.apinewsigaa.model.DisciplinaModel;
 import br.edu.ifs.apinewsigaa.model.ProfessorModel;
 import br.edu.ifs.apinewsigaa.repository.ProfessorRepository;
-import br.edu.ifs.apinewsigaa.rest.Dtos.DisciplinaDto;
-import br.edu.ifs.apinewsigaa.rest.Dtos.ProfessorDisciplinasDto;
-import br.edu.ifs.apinewsigaa.rest.Dtos.ProfessorDto;
+import br.edu.ifs.apinewsigaa.rest.Dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -131,6 +130,133 @@ public class ProfessorService {
         professorDisciplinasDto.setDisciplinas(disciplinasProfessor);
 
         return professorDisciplinasDto;
+    }
+
+//    {
+//        "professor": {
+//        "matricula": "PROF12345",
+//                "nome": "Glauco Luiz Rezende de Carvalho",
+//                "cpf": "009.717.570-62",
+//                "email": "glauco.carvalho@academico.ifs.edu.br",
+//                "dataNascimento": "1979-10-09",
+//                "celular": "(79)98113-0366"
+//    },
+//        "disciplinas": [
+//        {
+//            "disciplina": {
+//            "id": 1,
+//                    "nome": "Programação",
+//                    "numeroCreditos": 4
+//        },
+//            "alunos": [
+//            {
+//                "id": 1,
+//                    "nome": "Ana Paula da Silva",
+//                    "cpf": "108.887.090-21",
+//                    "email": "ana.silva@academico.ifs.edu.br",
+//                    "dataNascimento": "2000-05-12",
+//                    "celular": "(79)98765-4321",
+//                    "apelido": "Ana",
+//                    "matricula": "ALU2020001"
+//            },
+//            {
+//                "id": 2,
+//                    "nome": "Carlos Eduardo Pereira",
+//                    "cpf": "469.062.520-46",
+//                    "email": "carlos.pereira@academico.ifs.edu.br",
+//                    "dataNascimento": "1999-10-20",
+//                    "celular": "(79)99876-5432",
+//                    "apelido": "Cadu",
+//                    "matricula": "ALU2020002"
+//            }
+//      ]
+//        },
+//        {
+//            "disciplina": {
+//            "id": 2,
+//                    "nome": "Banco de Dados",
+//                    "numeroCreditos": 3
+//        },
+//            "alunos": [
+//            {
+//                "id": 3,
+//                    "nome": "Maria Fernanda Costa",
+//                    "cpf": "961.508.410-73",
+//                    "email": "maria.costa@academico.ifs.edu.br",
+//                    "dataNascimento": "2001-03-15",
+//                    "celular": "(79)98765-1234",
+//                    "apelido": "Mari",
+//                    "matricula": "ALU2020003"
+//            },
+//            {
+//                "id": 4,
+//                    "nome": "João Pedro Almeida",
+//                    "cpf": "474.468.310-06",
+//                    "email": "joao.almeida@academico.ifs.edu.br",
+//                    "dataNascimento": "1998-12-05",
+//                    "celular": "(79)99876-5432",
+//                    "apelido": "JP",
+//                    "matricula": "ALU2020004"
+//            }
+//      ]
+//        },
+//        {
+//            "disciplina": {
+//            "id": 3,
+//                    "nome": "Estrutura de Dados",
+//                    "numeroCreditos": 4
+//        },
+//            "alunos": [
+//            {
+//                "id": 2,
+//                    "nome": "Carlos Eduardo Pereira",
+//                    "cpf": "801.879.720-01",
+//                    "email": "carlos.pereira@academico.ifs.edu.br",
+//                    "dataNascimento": "1999-10-20",
+//                    "celular": "(79)99876-5432",
+//                    "apelido": "Cadu",
+//                    "matricula": "ALU2020002"
+//            },
+//            {
+//                "id": 5,
+//                    "nome": "Luiza Martins",
+//                    "cpf": "460.454.960-51",
+//                    "email": "luiza.martins@academico.ifs.edu.br",
+//                    "dataNascimento": "2000-09-10",
+//                    "celular": "(79)98765-4321",
+//                    "apelido": "Lu",
+//                    "matricula": "ALU2020005"
+//            }
+//      ]
+//        }
+//  ]
+//    }
+
+    @Transactional(readOnly = true)
+    public ProfessorDisciplinasAlunosDto getProfessorDisciplinasAlunos(String matricula) {
+        ProfessorModel professor = getProfessorPorMatricula(matricula);
+
+        ProfessorDisciplinasAlunosDto professorDisciplinasAlunosDto = new ProfessorDisciplinasAlunosDto();
+        professorDisciplinasAlunosDto.setProfessor(professor.toDto());
+
+        List<DisciplinaComAlunosDto> disciplinasComAlunos = professor.getDisciplinas()
+                .stream()
+                .map(disciplina -> {
+                    DisciplinaComAlunosDto disciplinaComAlunosDto = new DisciplinaComAlunosDto();
+                    disciplinaComAlunosDto.setDisciplina(disciplina.toDto());
+
+                    List<AlunoDto> alunos = disciplina.getAlunos()
+                            .stream()
+                            .map(AlunoModel::toDto)
+                            .collect(Collectors.toList());
+
+                    disciplinaComAlunosDto.setAlunos(alunos);
+                    return disciplinaComAlunosDto;
+                }).collect(Collectors.toList());
+
+        professorDisciplinasAlunosDto.setDisciplinas(disciplinasComAlunos);
+        return professorDisciplinasAlunosDto;
+
     }
 
 
