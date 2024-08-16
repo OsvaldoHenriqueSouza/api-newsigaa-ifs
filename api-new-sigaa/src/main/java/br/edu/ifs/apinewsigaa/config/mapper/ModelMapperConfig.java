@@ -1,4 +1,4 @@
-package br.edu.ifs.apinewsigaa.mapper;
+package br.edu.ifs.apinewsigaa.config.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
