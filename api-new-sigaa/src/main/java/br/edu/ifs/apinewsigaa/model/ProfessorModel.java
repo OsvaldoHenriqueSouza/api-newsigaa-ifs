@@ -4,8 +4,8 @@ import br.edu.ifs.apinewsigaa.rest.Dtos.ProfessorDto;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
-
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -28,6 +28,8 @@ public class ProfessorModel {
     private String apelido;
     @Column(name = "matricula", nullable = false, unique = true)
     private String matricula;
+    @OneToMany(mappedBy = "professor")
+    private List<DisciplinaModel> disciplinas;
 
     public ProfessorDto toDto() {
         ModelMapper modelMapper = new ModelMapper();

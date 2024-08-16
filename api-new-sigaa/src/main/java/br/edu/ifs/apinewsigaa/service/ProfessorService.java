@@ -1,15 +1,17 @@
 package br.edu.ifs.apinewsigaa.service;
 
 import br.edu.ifs.apinewsigaa.exception.ObjectNotFoundException;
+import br.edu.ifs.apinewsigaa.model.AlunoModel;
+import br.edu.ifs.apinewsigaa.model.DisciplinaModel;
 import br.edu.ifs.apinewsigaa.model.ProfessorModel;
 import br.edu.ifs.apinewsigaa.repository.ProfessorRepository;
-import br.edu.ifs.apinewsigaa.rest.Dtos.ProfessorDto;
+import br.edu.ifs.apinewsigaa.rest.Dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 
@@ -65,6 +67,57 @@ public class ProfessorService {
             throw new ObjectNotFoundException("Erro ao deletar professor: " + e.getMessage());
         }
     }
+
+    @Transactional(readOnly = true)
+    public ProfessorModel getProfessorPorMatricula(String matricula) {
+        return professorRepository.findByMatricula(matricula)
+                .orElseThrow(() -> new ObjectNotFoundException("Professor com a matrícula: " + matricula +  " não encontrado"));
+    }
+
+    @Transactional(readOnly = true)
+    public ProfessorDisciplinasDto getProfessorDisciplinas(String matricula) {
+        ProfessorModel professor = getProfessorPorMatricula(matricula);
+
+        List<DisciplinaDto> disciplinasProfessor = professor.getDisciplinas()
+                .stream()
+                .map(DisciplinaModel::toDto)
+                .collect(Collectors.toList());
+
+        ProfessorDisciplinasDto professorDisciplinasDto = new ProfessorDisciplinasDto();
+        professorDisciplinasDto.setProfessor(professor.toDto());
+        professorDisciplinasDto.setDisciplinas(disciplinasProfessor);
+
+        return professorDisciplinasDto;
+    }
+
+    @Transactional(readOnly = true)
+    public ProfessorDisciplinasAlunosDto getProfessorDisciplinasAlunos(String matricula) {
+        ProfessorModel professor = getProfessorPorMatricula(matricula);
+
+        ProfessorDisciplinasAlunosDto professorDisciplinasAlunosDto = new ProfessorDisciplinasAlunosDto();
+        professorDisciplinasAlunosDto.setProfessor(professor.toDto());
+
+        List<DisciplinaComAlunosDto> disciplinasComAlunos = professor.getDisciplinas()
+                .stream()
+                .map(disciplina -> {
+                    DisciplinaComAlunosDto disciplinaComAlunosDto = new DisciplinaComAlunosDto();
+                    disciplinaComAlunosDto.setDisciplina(disciplina.toDto());
+
+                    List<AlunoDto> alunos = disciplina.getAlunos()
+                            .stream()
+                            .map(AlunoModel::toDto)
+                            .collect(Collectors.toList());
+
+                    disciplinaComAlunosDto.setAlunos(alunos);
+                    return disciplinaComAlunosDto;
+                }).collect(Collectors.toList());
+
+        professorDisciplinasAlunosDto.setDisciplinas(disciplinasComAlunos);
+        return professorDisciplinasAlunosDto;
+
+    }
+
+
     public boolean verificaExistenciaProfessor(int id) {
         return professorRepository.existsById(id);
     }

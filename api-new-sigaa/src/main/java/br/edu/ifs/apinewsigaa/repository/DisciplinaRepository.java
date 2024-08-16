@@ -11,7 +11,6 @@ import java.util.Optional;
 public interface DisciplinaRepository extends JpaRepository<DisciplinaModel, Integer> {
     Boolean existsByNome(String nome);
 
-    Optional<DisciplinaModel> findById(int id);
     Optional<DisciplinaModel> findByNome(String nome);
 
     void deleteByNome(String nome);
